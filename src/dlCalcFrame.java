@@ -12,6 +12,9 @@ public class dlCalcFrame extends JFrame
     //Instance the calculator
     dlCalculator calc = new dlCalculator();
 
+    static JLabel spdLbl;
+    static JLabel szeLbl;
+
     //Constructor
     public dlCalcFrame()
     {
@@ -28,6 +31,8 @@ public class dlCalcFrame extends JFrame
         jpContainer.setLayout(new BoxLayout(jpContainer, BoxLayout.Y_AXIS));
         jpContainer.setBorder(new MatteBorder(10, 10, 10, 10, Color.GRAY));
         jpContainer.add(modeFrame());
+        jpContainer.add(Box.createRigidArea(new Dimension(0, 10)));
+        jpContainer.add(inputPnl());
 
 
         add(jpContainer);
@@ -77,6 +82,8 @@ public class dlCalcFrame extends JFrame
         jpModeFrame.add(mbButton);
         jpModeFrame.add(gbButton);
 
+        jpModeFrame.add(Box.createRigidArea(new Dimension(80, 0)));
+
         ButtonGroup bg = new ButtonGroup();
         bg.add(gbButton);
         bg.add(mbButton);
@@ -85,24 +92,43 @@ public class dlCalcFrame extends JFrame
         mbButton.addActionListener(this::jButtonMbMode);
         gbButton.addActionListener(this::jButtonGbMode);
 
-
-
         return jpModeFrame;
     }
 
+    private JPanel inputPnl()
+    {
+        JPanel jpInputPnl = new JPanel();
+        jpInputPnl.setMaximumSize(new Dimension(300, 300));
+        jpInputPnl.setLayout(new GridLayout(0,3));
+        spdLbl = new JLabel("Speed (MB/s): ");
+        JTextField spdInputField = new JTextField();
+        Border border = BorderFactory.createTitledBorder("Input");
+        jpInputPnl.setBorder(border);
+
+        jpInputPnl.add(spdLbl);
+        jpInputPnl.add(Box.createRigidArea(new Dimension(80, 0)));
+        jpInputPnl.add(spdInputField);
+
+        szeLbl = new JLabel("File Size: ");
+        JTextField szeInputField = new JTextField();
+
+        jpInputPnl.add(szeLbl);
+        jpInputPnl.add(Box.createRigidArea(new Dimension(80, 0)));
+        jpInputPnl.add(szeInputField);
+
+        return jpInputPnl;
+    }
 
 
     //Sets the mode to 0 for MB
     private void jButtonMbMode(ActionEvent e)
     {
         calc.setMode(0);
-        System.out.println(calc.getMode());
     }
 
     //Sets the mode to 1 for GB
     private void jButtonGbMode(ActionEvent e)
     {
         calc.setMode(1);
-        System.out.println(calc.getMode());
     }
 }
