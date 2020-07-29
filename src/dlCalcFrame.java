@@ -169,9 +169,9 @@ public class dlCalcFrame extends JFrame
     //Listener for the calculate button
     private void jButtonCalculate(ActionEvent e)
     {
-        Double speed = Double.parseDouble(spdInputField.getText());
-        Double size = Double.parseDouble(szeInputField.getText());
-        int timeSecs = 0;
+        double speed = Double.parseDouble(spdInputField.getText());
+        double size = Double.parseDouble(szeInputField.getText());
+        int timeSecs;
 
         switch (calc.getMode())
         {
