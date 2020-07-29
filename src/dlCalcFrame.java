@@ -14,6 +14,10 @@ public class dlCalcFrame extends JFrame
 
     static JLabel spdLbl;
     static JLabel szeLbl;
+    static JLabel displayResult;
+    static JTextField spdInputField;
+    static JTextField szeInputField;
+
 
     //Constructor
     public dlCalcFrame()
@@ -33,7 +37,10 @@ public class dlCalcFrame extends JFrame
         jpContainer.add(modeFrame());
         jpContainer.add(Box.createRigidArea(new Dimension(0, 10)));
         jpContainer.add(inputPnl());
-
+        jpContainer.add(Box.createRigidArea(new Dimension(0, 10)));
+        jpContainer.add(calcPanel());
+        jpContainer.add(Box.createRigidArea(new Dimension(0, 10)));
+        jpContainer.add(resultPanel());
 
         add(jpContainer);
         pack();
@@ -65,6 +72,8 @@ public class dlCalcFrame extends JFrame
         EventQueue.invokeLater(() -> new dlCalcFrame().setVisible(true));
     }
 
+    //JPanel to hold the mode radio buttons, only one can be selected at once.
+    //Switching between them changes the mode variable for the dlCalculator instance
     private JPanel modeFrame()
     {
         JPanel jpModeFrame = new JPanel();
@@ -95,13 +104,15 @@ public class dlCalcFrame extends JFrame
         return jpModeFrame;
     }
 
+    //JPanel to hold the input fields
     private JPanel inputPnl()
     {
         JPanel jpInputPnl = new JPanel();
         jpInputPnl.setMaximumSize(new Dimension(300, 300));
         jpInputPnl.setLayout(new GridLayout(0,3));
         spdLbl = new JLabel("Speed (MB/s): ");
-        JTextField spdInputField = new JTextField();
+        spdInputField = new JTextField("0");
+        spdInputField.setHorizontalAlignment(SwingConstants.RIGHT);
         Border border = BorderFactory.createTitledBorder("Input");
         jpInputPnl.setBorder(border);
 
@@ -110,7 +121,8 @@ public class dlCalcFrame extends JFrame
         jpInputPnl.add(spdInputField);
 
         szeLbl = new JLabel("File Size: ");
-        JTextField szeInputField = new JTextField();
+        szeInputField = new JTextField("0");
+        szeInputField.setHorizontalAlignment(SwingConstants.RIGHT);
 
         jpInputPnl.add(szeLbl);
         jpInputPnl.add(Box.createRigidArea(new Dimension(80, 0)));
@@ -119,6 +131,28 @@ public class dlCalcFrame extends JFrame
         return jpInputPnl;
     }
 
+    //JPanel to hold the calculate button. Pressing this button will perform the calculation by calling the
+    //calculate function using the values input into the fields.
+    private JPanel calcPanel()
+    {
+        JPanel cbPanel = new JPanel();
+
+        JButton calcButton = new JButton("Calculate");
+        calcButton.addActionListener(this::jButtonCalculate);
+        cbPanel.add(calcButton);
+
+        return cbPanel;
+    }
+
+    private JPanel resultPanel()
+    {
+        JPanel resPanel = new JPanel();
+
+        displayResult = new JLabel("Download will take ");
+        resPanel.add(displayResult);
+
+        return resPanel;
+    }
 
     //Sets the mode to 0 for MB
     private void jButtonMbMode(ActionEvent e)
@@ -130,5 +164,27 @@ public class dlCalcFrame extends JFrame
     private void jButtonGbMode(ActionEvent e)
     {
         calc.setMode(1);
+    }
+
+    //Listener for the calculate button
+    private void jButtonCalculate(ActionEvent e)
+    {
+        Double speed = Double.parseDouble(spdInputField.getText());
+        Double size = Double.parseDouble(szeInputField.getText());
+        int timeSecs = 0;
+
+        switch (calc.getMode())
+        {
+            case 0:
+                timeSecs = calc.mbCalc(size, speed);
+                displayResult.setText("Download will take " + timeCalc.convert(timeSecs));
+                break;
+            case 1:
+                timeSecs = calc.gbCalc(size, speed);
+                displayResult.setText("Download will take " + timeCalc.convert(timeSecs));
+                break;
+            default:
+                break;
+        }
     }
 }
